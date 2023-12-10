@@ -2,7 +2,7 @@ import axiosApi from '../../axiosApi';
 import {ApiMeal} from '../../types';
 import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
-import MealForm from '../mealForm/mealForm';
+import MealForm from '../../components/mealForm/mealForm';
 
 const NewMeal = () => {
   const navigate = useNavigate();
