@@ -3,6 +3,7 @@ import {ApiMeal, MealMutation} from '../../types';
 import ButtonSpinner from '../Spinner/ButtonSpinner';
 
 const initialState: MealMutation = {
+  date: new Date().toISOString().split('T')[0],
   time: '',
   description: '',
   calories: '',
@@ -10,13 +11,21 @@ const initialState: MealMutation = {
 
 interface Props {
   onSubmit: (meal: ApiMeal) => void;
-  existingDish?: MealMutation;
+  existingMeal?: MealMutation;
   isEdit?: boolean;
   isLoading?: boolean;
 }
 
-const MealForm: React.FC<Props> = ({onSubmit, existingDish = initialState, isEdit = false, isLoading = false}) => {
-  const [meal, setMeal] = useState<MealMutation>(existingDish);
+const MealForm: React.FC<Props> = ({onSubmit, existingMeal = initialState, isEdit = false, isLoading = false}) => {
+  const [meal, setMeal] = useState<MealMutation>(existingMeal);
+
+  const formatDate = (inputDate: string) => {
+    const date = new Date(inputDate);
+    const year = date.getFullYear();
+    const month = `0${date.getMonth() + 1}`.slice(-2);
+    const day = `0${date.getDate()}`.slice(-2);
+    return `${year}-${month}-${day}`;
+  };
 
   const changeMeal = (e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>) => {
     setMeal((prevState) => ({
@@ -32,12 +41,25 @@ const MealForm: React.FC<Props> = ({onSubmit, existingDish = initialState, isEdi
     onSubmit({
       ...meal,
       calories: parseFloat(meal.calories),
+      date: formatDate(meal.date),
     });
   };
 
   return (
     <form onSubmit={onFormSubmit}>
       <h4>{isEdit ? 'Edit meal' : 'Add new meal'}</h4>
+      <div className="form-group">
+        <label htmlFor="date">Date of meal</label>
+        <input
+          type="date"
+          name="date"
+          value={meal.date}
+          required
+          id="date"
+          className="form-control"
+          onChange={changeMeal}
+        />
+      </div>
       <div className="form-group">
         <label htmlFor="meal">Meal time</label>
         <select
@@ -83,7 +105,6 @@ const MealForm: React.FC<Props> = ({onSubmit, existingDish = initialState, isEdi
         Save
       </button>
     </form>
-
   );
 };
 

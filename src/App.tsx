@@ -5,6 +5,7 @@ import NewMeal from './containers/NewMeal/NewMeal';
 import {useCallback, useEffect, useState} from 'react';
 import {Meal, MealsList} from './types';
 import axiosApi from './axiosApi';
+import EditMeal from './containers/EditMeal/EditMeal';
 
 
 function App() {
@@ -28,6 +29,9 @@ function App() {
             id,
           };
         });
+        newMeals.sort((a, b) => {
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
         setMeals(newMeals);
       }
     } finally {
@@ -42,10 +46,8 @@ function App() {
   }, [location.pathname, fetchMeals]);
 
   const deleteMeal = async (id: string) => {
-    if (window.confirm('Do you really want to delete?')) {
-      await axiosApi.delete('meals/' + id + '.json');
-      await fetchMeals();
-    }
+    await axiosApi.delete('meals/' + id + '.json');
+    await fetchMeals();
   };
 
   return (
@@ -63,6 +65,7 @@ function App() {
             />
           )}/>
           <Route path="/new-meal" element={<NewMeal/>}/>
+          <Route path="/edit-meal/:id" element={<EditMeal/>}/>
         </Routes>
       </main>
     </>

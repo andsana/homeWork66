@@ -4,19 +4,23 @@ import MealItem from './MealItem';
 
 interface Props {
   meals: Meal[];
-  deleteMeal: (id: string) => void;
+  deleteMeal: (id: string) => Promise<void>;
 }
 
 const Meals: React.FC<Props> = ({meals, deleteMeal}) => {
+
   return (
     <>
-      <h4>Meals</h4>
-      {meals.map((meal) => (
-        <MealItem
-          key={meal.id}
-          meal={meal}
-          onDelete={() => deleteMeal(meal.id)}/>
-      ))}
+      {meals.length > 0
+        ? meals.map((meal) => (
+          <MealItem
+            key={meal.id}
+            meal={meal}
+            onDelete={() => deleteMeal(meal.id)}
+          />
+        ))
+        : <div className="alert alert-primary">Not Found! Please add new meal!</div>
+      }
     </>
   );
 };
